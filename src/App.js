@@ -1,26 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react"
+import "./styles.css"
+
+/**
+ * Challenge: Using hooks, track the state of the text in the textarea on every keystroke
+ * To verify it's working, you could just console.log the state on every change
+ *
+ * https://scrimba.com/p/p7P5Hd/cW8Jdfy
+ */
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+    const [text, setText] = useState("")
+    console.log(text); 
+
+    function handleChange(event) {
+        const { value } = event.target
+        setText(value)
+    }
+
+    return (
+        <div>
+            <h1>How Fast Do You Type?</h1>
+            <textarea value={text} onChange={handleChange}/>
+            <h4>Time Remaining: X</h4>
+            <button>Start</button>
+            <h1>Word Count: X</h1>
+        </div>
+    )
 }
 
-export default App;
+export default App 
