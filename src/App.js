@@ -1,18 +1,30 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import "./styles.css"
 
 /**
  * Challenge:
  *
- * Create a function to calculate the number of separate words in the `text` state
- * For now, just console.log the word count when the button gets clicked to test it out.
+ * Make it so clicking the Start button starts the timer instead of it starting on refresh
+ * (Hint: use a new state variable to indicate if the game should be running or not)
  */
 
 function App() {
 
     const [text, setText] = useState("")
+    const [timeRemaining, setTimeRemaining] = useState(10)
+    const [isTimeRunning, setIsTimeRunning] = useState(false)
 
     console.log(text); 
+
+    useEffect(() => {
+        if(timeRemaining > 0 && isTimeRunning) {
+            setTimeout(() => {
+                setTimeRemaining(time => time - 1)
+            }, 1000)
+        } else {
+            setIsTimeRunning(false)
+        }
+    }, [timeRemaining, isTimeRunning])
 
     function handleChange(event) {
         const { value } = event.target
@@ -27,8 +39,8 @@ function App() {
         <div>
             <h1>How Fast Do You Type?</h1>
             <textarea value={text} onChange={handleChange}/>
-            <h4>Time Remaining: X</h4>
-            <button onClick={ () => console.log(countWords(text)) }>Start</button>
+            <h4>Time Remaining: {timeRemaining}</h4>
+            <button onClick={ () => setIsTimeRunning(true) }>Start</button>
             <h1>Word Count: X</h1>
         </div>
     )
