@@ -1,20 +1,23 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import "./styles.css"
 
 /**
  * Challenge:
  *
- * Make it so clicking the Start button starts the timer instead of it starting on refresh
- * (Hint: use a new state variable to indicate if the game should be running or not)
+ * Make the input box focus (DOM elements have a method called .focus())
+ * immediately when the game starts
  */
 
 function App() {
 
-    const [text, setText] = useState("")
-    const [timeRemaining, setTimeRemaining] = useState(10)
-    const [isTimeRunning, setIsTimeRunning] = useState(false)
+    const START_TIME = 10
 
-    console.log(text); 
+    const [text, setText] = useState("")
+    const [timeRemaining, setTimeRemaining] = useState(START_TIME)
+    const [isTimeRunning, setIsTimeRunning] = useState(false)
+    const [wordCount, setWordCount] = useState(0)
+
+    const textBoxRef = useRef(null);
 
     useEffect(() => {
         if(timeRemaining > 0 && isTimeRunning) {
@@ -22,7 +25,7 @@ function App() {
                 setTimeRemaining(time => time - 1)
             }, 1000)
         } else {
-            setIsTimeRunning(false)
+            endGame()
         }
     }, [timeRemaining, isTimeRunning])
 
@@ -35,13 +38,26 @@ function App() {
         return text.trim().split(' ').filter(e => e !== '').length  
     }
 
+    function startGame() {
+        setText("")
+        setIsTimeRunning(true)
+        setTimeRemaining(START_TIME)
+        textBoxRef.current.disabled = false; //Bug fix, see part 7. Currently disabled at the time of async call
+        textBoxRef.current.focus()
+    }
+
+    function endGame() {
+        setIsTimeRunning(false)
+        setWordCount(countWords(text))
+    }
+
     return (
         <div>
             <h1>How Fast Do You Type?</h1>
-            <textarea value={text} onChange={handleChange}/>
+            <textarea ref={textBoxRef} value={text} onChange={handleChange} disabled={!isTimeRunning}/>
             <h4>Time Remaining: {timeRemaining}</h4>
-            <button onClick={ () => setIsTimeRunning(true) }>Start</button>
-            <h1>Word Count: X</h1>
+            <button onClick={() => startGame()} disabled={isTimeRunning}>Start</button>
+            <h1>Word Count: {wordCount}</h1>
         </div>
     )
 }
